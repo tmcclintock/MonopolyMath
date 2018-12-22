@@ -18,9 +18,16 @@ class DiceRoller(object):
             and whether doubles were rolled
     """
     def __init__(self, sides=6, number=2, dice_array=None):
+        if type(sides) is not int:
+            raise Exception("'sides' must be an integer.")
+        if type(number) is not int:
+            raise Exception("'number' must be an integer.")
         self.sides = 6
         self.number = 2
         self.dice_array = dice_array
+        if self.dice_array is not None:
+            self.sides = -1
+            self.number = len(dice_array)
         
     def roll(self):
         """
@@ -30,9 +37,11 @@ class DiceRoller(object):
         """
         rolls = []
         if self.dice_array is not None:
-            rolls.append(np.random.randint(dice) for dice in dice_array)
+            for dice in self.dice_array:
+                rolls.append(np.random.randint(1, dice+1))
         else:
-            rolls.append(np.random.randint(self.sides) for _ in range(0,self.number))
+            for _ in range(0,self.number):
+                rolls.append(np.random.randint(1, self.sides+1))
         #Fast way from stack overflow to determine if all
         #entries in "rolls" are equal, i.e. when doubles are rolled
         #but for arbitrary number of dice
