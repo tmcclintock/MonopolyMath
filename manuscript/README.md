@@ -1,0 +1,1 @@
+For some mathematical details, check out `manuscript.pdf`.
