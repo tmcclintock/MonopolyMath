@@ -2,6 +2,10 @@ import numpy as np
 import numpy.testing as npt
 import monopolymath as mm
 
+def test_diceroller_exceptions():
+    #Not implemented yet
+    pass
+
 def test_diceroller_without_dice_array():
     #First, test that it builds
     dr = mm.DiceRoller()
@@ -23,6 +27,9 @@ def test_diceroller_without_dice_array():
         npt.assert_equal(True, 1 <= rolls[0] <= 6)
         npt.assert_equal(True, 1 <= rolls[1] <= 6)
         npt.assert_equal(rolls[0]==rolls[1], doubles)
+    #Test that the probability array sums to 1
+    npt.assert_equal(1., dr.probability_array().sum())
+    npt.assert_equal(dr.N_combinations, dr.probability_array(unnormalized=True).sum())
     return
 
 def test_diceroller_with_dice_array():
@@ -51,5 +58,6 @@ def test_diceroller_with_dice_array():
     return
 
 if __name__ == "__main__":
+    test_diceroller_exceptions()
     test_diceroller_without_dice_array()
     test_diceroller_with_dice_array()

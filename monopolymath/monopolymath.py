@@ -1,7 +1,7 @@
 """
 A tool used to simulate a player playing the game Monopoly. This tool tracks the rolls that the player makes.
 """
-
+import math
 import numpy as np
 
 class DiceRoller(object):
@@ -47,3 +47,27 @@ class DiceRoller(object):
         #but for arbitrary number of dice
         doubles = not rolls or [rolls[0]]*len(rolls) == rolls
         return np.sum(rolls), rolls, doubles
+
+    def probability_array(self, unnormalized=False):
+        """
+        Return the multinomial disribution given the dice that this
+        dice roller rolls. That is, the probability of being rolled 
+        for each number that can be rolled.
+
+        Returns:
+            float array: Probability of each possible roll.
+        """
+        if self.dice_array is not None:
+            raise Exception("P-array when using a dice_array not implemented yet.")
+        else:
+            if (self.sides is not 6) and (self.number is not 2):
+                raise Exception("Anything but two six-sided dice not supported yet.")
+            N_combinations = self.sides**self.number
+            possible_rolls = np.arange(self.number, self.number*self.sides+1)
+            #Hack for 2d6
+            combinations = np.array([1,2,3,4,5,6,5,4,3,2,1])
+            probability = combinations/float(N_combinations)
+        self.N_combinations = N_combinations
+        if unnormalized:
+            probability = combinations #don't do the divide
+        return probability
