@@ -1,7 +1,6 @@
 """
 A tool used to simulate a player playing the game Monopoly. This tool tracks the rolls that the player makes.
 """
-import math
 import numpy as np
 
 class DiceRoller(object):
@@ -28,7 +27,28 @@ class DiceRoller(object):
         if self.dice_array is not None:
             self.sides = -1
             self.number = len(dice_array)
-        
+
+    def minimum_roll(self):
+        """
+        The minimum possible roll given the dice on this roller.
+
+        Returns:
+            int: the minimum roll
+        """
+        return self.number
+
+    def maximum_roll(self):
+        """
+        The maximum possible roll given the dice on this roller.
+
+        Returns:
+            int: the maximum roll
+        """
+        if self.dice_array is None:
+            return self.number * self.sides
+        else:
+            return np.sum(self.dice_array)
+            
     def roll(self):
         """
         Roll all the dice present on this object. Rolls either
@@ -48,6 +68,9 @@ class DiceRoller(object):
         doubles = not rolls or [rolls[0]]*len(rolls) == rolls
         return np.sum(rolls), rolls, doubles
 
+    def get_possible_rolls(self):
+        return np.arange(self.number, self.number*self.sides+1)
+
     def probability_array(self, unnormalized=False):
         """
         Return the multinomial disribution given the dice that this
@@ -63,7 +86,6 @@ class DiceRoller(object):
             if (self.sides is not 6) and (self.number is not 2):
                 raise Exception("Anything but two six-sided dice not supported yet.")
             N_combinations = self.sides**self.number
-            possible_rolls = np.arange(self.number, self.number*self.sides+1)
             #Hack for 2d6
             combinations = np.array([1,2,3,4,5,6,5,4,3,2,1])
             probability = combinations/float(N_combinations)
