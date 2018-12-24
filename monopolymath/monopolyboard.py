@@ -15,8 +15,19 @@ class MonopolyBoard(Board):
     A monopoly board. Extends the `board` class.
     """
     def __init__(self):
-        #names = ["Go","St. James Place","f","m","l","Boardwalk"]
-        names = np.arange(20)
+        names = ["Go", "Mediterranean Ave", "Community Chest 1",
+                 "Baltic Ave", "Income Tax", "Reading Railroad",
+                 "Oriental Ave", "Chance 1", "Vermont Ave",
+                 "Connecticut Ave", "Just Visiting", "St. Charles Pl.",
+                 "Electic Company", "States Ave", "Virgina Ave",
+                 "Pennsylvania Railroad", "St. James Pl.", "Community Chest 2",
+                 "Tennessee Ave", "NY Ave", "Free Parking",
+                 "Kentucky Ave", "Chance 2", "Indiana Ave",
+                 "Illinois Ave", "B&O Railroad", "Atlantic Ave", "Ventnor Ave",
+                 "Water Works", "Marvin Gardens", "Go To Jail",
+                 "Pacific Ave", "North Carolina Ave", "Community Chest 3",
+                 "Pennsylvania Ave", "Short Line", "Chance 3",
+                 "Park Place", "Luxury Tax", "Boardwalk"]
         self.number_of_spaces = len(names)
         #Create the spaces on the board
         self.spaces = [MonopolySpace(name, 0) for name in names]
@@ -27,7 +38,6 @@ class MonopolyBoard(Board):
         self.space_visits = np.zeros(self.number_of_spaces)
         self.position_vector = np.zeros(self.number_of_spaces)
         self._update_position(0)
-        self.number_of_rolls = 0
         
     def _update_position(self, new_position):
         if new_position > self.number_of_spaces:
@@ -39,15 +49,35 @@ class MonopolyBoard(Board):
         self.space_visits[new_position] += 1
         return
 
+    def get_total_number_of_moves(self):
+        """
+        Get the total number of times a move
+        on the board has been made, by summing up
+        the number of times spaces have been visited.
+        """
+        return np.sum(self.space_visits)
+
     def get_current_space(self):
+        """
+        Get the space of the current position.
+        """
         return self.spaces[self.position]
         
     def assign_dice(self,  sides=6, number=2, dice_array=None):
+        """
+        Assign dice to the board. By default this will be
+        the standard monopoly set of two six-sided die.
+        """
         self.diceroller = DiceRoller(sides, number, dice_array)
         self._compute_roll_matrix()
         return
 
     def _compute_roll_matrix(self):
+        """
+        Compute the roll matrix (R), which encodes the
+        probability of going from one space to any other space
+        by rolling the dice assigned to this board.
+        """
         if not hasattr(self, "diceroller"):
             raise Exception("Must assign dice before roll matrix is computed.")
         N = self.number_of_spaces
@@ -63,11 +93,28 @@ class MonopolyBoard(Board):
             continue
         return
 
-    def move_player(self):
-        #make a roll, record the position
-        roll, dice_rolls, doubles = self.diceroller.roll()
-        new_position = (self.position+roll)%self.number_of_spaces
-        self._update_position(new_position)
+    def _compute_action_matrix(self):
+        """
+        Compute the action matrix that encodes rules such as the jail,
+        chance, community chest, and doubles.
+        """
+        pass
+
+    def move_player(self, via_roll=True):
+        """
+        Move the player, either via rolling the dice (simulation)
+        or by apply the transition matrix to the position vector.
+        """
+        if via_roll:
+            #make a roll, record the position
+            roll, dice_rolls, doubles = self.diceroller.roll()
+            new_position = (self.position+roll)%self.number_of_spaces
+            self._update_position(new_position)
+        else:
+            v = self.position_vector
+            #T = self.transition_matrix #Roll \dot Action
+            raise Exception("Moving via the transition matrix is "+\
+                            "not implemented yet.")
         return
     
 if __name__ == "__main__":
