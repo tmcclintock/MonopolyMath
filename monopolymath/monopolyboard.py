@@ -35,6 +35,15 @@ class MonopolyBoard(Board):
         self.space_visits = np.zeros(self.number_of_spaces)
         self.position_vector = np.zeros(self.number_of_spaces)
         self._update_position(0)
+
+    def _space_names(self):
+        return [sp.name for sp in self.spaces]
+
+    def _space_index_from_name(self, name):
+        return self._space_names.index(name)
+
+    def _update_from_move(self, move_amount):
+        self._update_position(self.position + move_amount)
         
     def _update_position(self, new_position):
         if new_position > self.number_of_spaces:

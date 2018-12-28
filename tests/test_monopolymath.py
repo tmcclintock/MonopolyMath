@@ -78,9 +78,20 @@ def test_monopolyboard():
              "position"]
     for att in attrs:
         npt.assert_equal(True, hasattr(mb, att))
-    #Assign dice and test new attributes
+    #Assign dice and test new attributes and roll matrix size
     mb.assign_dice()
     npt.assert_equal(True, hasattr(mb, "diceroller"))
+    npt.assert_equal(True, hasattr(mb, "roll_matrix"))
+    npt.assert_equal((40,40), mb.roll_matrix.shape)
+    #Make sure that the current space is 0
+    npt.assert_equal(1, mb.get_total_number_of_moves())
+    npt.assert_equal(0, mb.position)
+    npt.assert_equal("Go", mb._space_names()[mb.position])
+    #Move 1 space and test everything again
+    mb._update_from_move(1)
+    npt.assert_equal(2, mb.get_total_number_of_moves())
+    npt.assert_equal(1, mb.position)
+    npt.assert_equal("Mediterranean Ave", mb._space_names()[mb.position])
     return
 
 if __name__ == "__main__":
