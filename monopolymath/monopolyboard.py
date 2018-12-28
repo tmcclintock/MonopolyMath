@@ -1,6 +1,7 @@
 """
 A specific monopoly board.
 """
+import typing
 from .diceroller import DiceRoller
 from .board import Space, Board
 import numpy as np
@@ -42,7 +43,7 @@ class MonopolyBoard(Board):
     def _space_index_from_name(self, name):
         return self._space_names.index(name)
 
-    def _update_from_move(self, move_amount):
+    def _update_from_move(self, move_amount: int):
         self._update_position(self.position + move_amount)
         
     def _update_position(self, new_position):

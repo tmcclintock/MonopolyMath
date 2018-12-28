@@ -6,6 +6,7 @@ dist = setup(name="monopolymath",
              description="Tool for simulating Monopoly.",
              license="MIT",
              url="https://github.com/tmcclintock/MonopolyMath",
+             python_requires='>=3.5',
              packages=['monopolymath'],
              long_description=open("README.md").read()
 )
