@@ -3,8 +3,21 @@ import numpy.testing as npt
 import monopolymath as mm
 
 def test_diceroller_exceptions():
-    #Not implemented yet
-    pass
+    #Test that sides and number are ints
+    with npt.assert_raises(Exception):
+        dr = mm.DiceRoller(sides=6.)
+    with npt.assert_raises(Exception):
+        dr = mm.DiceRoller(number=6.)
+    with npt.assert_raises(Exception):
+        dr = mm.DiceRoller(dice_array=[6,6])
+        dr.probability_array()
+    with npt.assert_raises(Exception):
+        dr = mm.DiceRoller(sides=4)
+        dr.probability_array()
+    with npt.assert_raises(Exception):
+        dr = mm.DiceRoller(number=4)
+        dr.probability_array()
+    return
 
 def test_diceroller_without_dice_array():
     #First, test that it builds
@@ -61,3 +74,4 @@ if __name__ == "__main__":
     test_diceroller_exceptions()
     test_diceroller_without_dice_array()
     test_diceroller_with_dice_array()
+    test_diceroller_exceptions()

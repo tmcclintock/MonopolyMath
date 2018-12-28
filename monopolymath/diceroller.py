@@ -21,8 +21,8 @@ class DiceRoller(object):
             raise Exception("'sides' must be an integer.")
         if type(number) is not int:
             raise Exception("'number' must be an integer.")
-        self.sides = 6
-        self.number = 2
+        self.sides = sides
+        self.number = number
         self.dice_array = dice_array
         if self.dice_array is not None:
             self.sides = -1
@@ -83,7 +83,7 @@ class DiceRoller(object):
         if self.dice_array is not None:
             raise Exception("P-array when using a dice_array not implemented yet.")
         else:
-            if (self.sides is not 6) and (self.number is not 2):
+            if (self.sides is not 6) or (self.number is not 2):
                 raise Exception("Anything but two six-sided dice not supported yet.")
             N_combinations = self.sides**self.number
             #Hack for 2d6
