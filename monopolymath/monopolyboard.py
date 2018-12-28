@@ -1,8 +1,8 @@
 """
 A specific monopoly board.
 """
-from diceroller import DiceRoller
-from board import Space, Board
+from .diceroller import DiceRoller
+from .board import Space, Board
 import numpy as np
 
 class MonopolySpace(Space):
