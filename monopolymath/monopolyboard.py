@@ -31,10 +31,7 @@ class MonopolyBoard(Board):
         self.number_of_spaces = len(names)
         #Create the spaces on the board
         self.spaces = [MonopolySpace(name, 0) for name in names]
-        #SET THE CURRENT POSITION OF AN IMAGINARY PLAYER
-        #TODO? - make a MonopolyPlayer object?
-        #this seems unreasonable since this board has all the
-        #space information...
+        #Set the current position of an imaginary player to 0 (Go)
         self.space_visits = np.zeros(self.number_of_spaces)
         self.position_vector = np.zeros(self.number_of_spaces)
         self._update_position(0)
@@ -97,6 +94,9 @@ class MonopolyBoard(Board):
         """
         Compute the action matrix that encodes rules such as the jail,
         chance, community chest, and doubles.
+        This function simply creates the matrix from a-priori rules, and
+        doesn't actually compute anything, unlike the roll matrix.
+        This is because the action matrix is set by the game rules themselves.
         """
         pass
 
@@ -111,7 +111,7 @@ class MonopolyBoard(Board):
             new_position = (self.position+roll)%self.number_of_spaces
             self._update_position(new_position)
         else:
-            v = self.position_vector
+            #v = self.position_vector
             #T = self.transition_matrix #Roll \dot Action
             raise Exception("Moving via the transition matrix is "+\
                             "not implemented yet.")

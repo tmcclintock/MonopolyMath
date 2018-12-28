@@ -8,6 +8,7 @@ def test_diceroller_exceptions():
         dr = mm.DiceRoller(sides=6.)
     with npt.assert_raises(Exception):
         dr = mm.DiceRoller(number=6.)
+    #Check that the probability_array() function raises exceptions
     with npt.assert_raises(Exception):
         dr = mm.DiceRoller(dice_array=[6,6])
         dr.probability_array()
@@ -70,8 +71,20 @@ def test_diceroller_with_dice_array():
         npt.assert_equal(rolls[0]==rolls[1]==rolls[2], doubles)
     return
 
+def test_monopolyboard():
+    #Test that a monopoly board object builds and has attributes
+    mb = mm.MonopolyBoard()
+    attrs = ["number_of_spaces","spaces","space_visits","position_vector",
+             "position"]
+    for att in attrs:
+        npt.assert_equal(True, hasattr(mb, att))
+    #Assign dice and test new attributes
+    mb.assign_dice()
+    npt.assert_equal(True, hasattr(mb, "diceroller"))
+    return
+
 if __name__ == "__main__":
     test_diceroller_exceptions()
     test_diceroller_without_dice_array()
     test_diceroller_with_dice_array()
-    test_diceroller_exceptions()
+    test_monopolyboard()
