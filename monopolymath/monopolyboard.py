@@ -1,15 +1,21 @@
 """
 A specific monopoly board.
 """
-import typing
+from typing import List
 from .diceroller import DiceRoller
 from .board import Space, Board
 import numpy as np
 
 class MonopolySpace(Space):
-    def __init__(self, name, cost): #landing info to be added later
+    """
+    Object to represent a space on th Monopoly board. Each space has
+    a name, and sometimes a cost and rent.
+    """
+    def __init__(self, name: str,
+                 cost=0, rent=None):
         self.name = name
         self.cost = cost
+        self.rent = rent
 
 class MonopolyBoard(Board):
     """
@@ -37,16 +43,17 @@ class MonopolyBoard(Board):
         self.position_vector = np.zeros(self.number_of_spaces)
         self._update_position(0)
 
-    def _space_names(self):
+    def _space_names(self) -> List[str]:
         return [sp.name for sp in self.spaces]
 
-    def _space_index_from_name(self, name):
+    def _space_index_from_name(self, name: str) -> int:
         return self._space_names.index(name)
 
-    def _update_from_move(self, move_amount: int):
+    def _update_from_move(self, move_amount: int) -> None:
         self._update_position(self.position + move_amount)
+        return
         
-    def _update_position(self, new_position):
+    def _update_position(self, new_position: int) -> None:
         if new_position > self.number_of_spaces:
             raise Exception("Something went wrong, can't "+
                             "move to space %d"%new_position)
@@ -56,7 +63,7 @@ class MonopolyBoard(Board):
         self.space_visits[new_position] += 1
         return
 
-    def get_total_number_of_moves(self):
+    def get_total_number_of_moves(self) -> int:
         """
         Get the total number of times a move
         on the board has been made, by summing up
@@ -64,13 +71,13 @@ class MonopolyBoard(Board):
         """
         return np.sum(self.space_visits)
 
-    def get_current_space(self):
+    def get_current_space(self) -> MonopolySpace:
         """
         Get the space of the current position.
         """
         return self.spaces[self.position]
         
-    def assign_dice(self,  sides=6, number=2, dice_array=None):
+    def assign_dice(self,  sides=6, number=2, dice_array=None) -> None:
         """
         Assign dice to the board. By default this will be
         the standard monopoly set of two six-sided die.
@@ -79,7 +86,7 @@ class MonopolyBoard(Board):
         self._compute_roll_matrix()
         return
 
-    def _compute_roll_matrix(self):
+    def _compute_roll_matrix(self) -> None:
         """
         Compute the roll matrix (R), which encodes the
         probability of going from one space to any other space
@@ -100,17 +107,29 @@ class MonopolyBoard(Board):
             continue
         return
 
-    def _compute_action_matrix(self):
+    def _compute_action_matrix(self) -> None:
         """
         Compute the action matrix that encodes rules such as the jail,
-        chance, community chest, and doubles.
-        This function simply creates the matrix from a-priori rules, and
-        doesn't actually compute anything, unlike the roll matrix.
-        This is because the action matrix is set by the game rules themselves.
-        """
-        pass
+        chance, community chest, and doubles. This function simply creates 
+        the matrix from a-priori rules, and doesn't actually compute anything, 
+        unlike the roll matrix. This is because the action matrix is set by 
+        the game rules themselves.
 
-    def move_player(self, via_roll=True):
+        As more rules are added, this function will get longer. The following
+        rules are implemented:
+        - None
+        The following rules need to be implemented:
+        - Chance cards
+        - Community chest cards
+        - Jail jump
+        - Jail doubles
+        """
+        N = self.number_of_spaces
+        A = np.identity(N, dtype=np.int32)
+        self.action_matrix = A
+        return
+
+    def move_player(self, via_roll=True) -> None:
         """
         Move the player, either via rolling the dice (simulation)
         or by apply the transition matrix to the position vector.
@@ -126,8 +145,8 @@ class MonopolyBoard(Board):
             raise Exception("Moving via the transition matrix is "+\
                             "not implemented yet.")
         return
-    
-if __name__ == "__main__":
+
+def main():
     mb = MonopolyBoard()
     print(mb)
     mb.print_space_names()
@@ -141,3 +160,6 @@ if __name__ == "__main__":
     plt.imshow(mb.roll_matrix)
     plt.colorbar()
     plt.show()
+
+if __name__ == "__main__":
+    main()
