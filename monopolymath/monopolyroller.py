@@ -2,7 +2,6 @@
 The rules for moving a monopoly player via rolling. 
 This allows for simulating the roll and action matrices.
 """
-import numpy as np
 
 class MonopolyRollMover(object):
     """
