@@ -19,6 +19,7 @@ class MonopolyRollMover(object):
         self.time_in_jail = 0
 
     def update_position(self, current_position: int,
+                        spaces: List[MonopolySpace],
                         number_of_spaces=40) -> int:
         #The variable to be output
         new_position = None
