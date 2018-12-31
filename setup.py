@@ -8,5 +8,8 @@ dist = setup(name="monopolymath",
              url="https://github.com/tmcclintock/MonopolyMath",
              python_requires='>=3.5',
              packages=['monopolymath'],
+             package_dir={'monopolymath': 'monopolymath'},
+             package_data={'monopolymath': ['*.txt']},
+             include_package_data=True,
              long_description=open("README.md").read()
 )

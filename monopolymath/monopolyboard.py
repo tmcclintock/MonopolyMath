@@ -5,16 +5,24 @@ from typing import List
 from .board import Space, Board
 from .diceroller import DiceRoller
 from .monopolyroller import MonopolyRollMover
+import os, inspect
 import numpy as np
+
+#The property data are loaded in from a txt file
+#note that the top line is a header
+data_path = os.path.dirname(os.path.abspath(inspect.stack()[0][1]))
+property_data = np.loadtxt(data_path+"/property_data.txt", skiprows=1)
 
 class MonopolySpace(Space):
     """
     Object to represent a space on th Monopoly board. Each space has
-    a name, and sometimes a cost and rent.
+    a name, what kind of space it is (property, utility, railroad, etc.),
+    and other information.
     """
     def __init__(self, name: str,
-                 cost=0, rent=None):
+                 kind=None, cost=0, rent=None):
         self.name = name
+        self.kind = kind
         self.cost = cost
         self.rent = rent
 
@@ -36,9 +44,39 @@ class MonopolyBoard(Board):
                  "Pacific Ave", "North Carolina Ave", "Community Chest 3",
                  "Pennsylvania Ave", "Short Line", "Chance 3",
                  "Park Place", "Luxury Tax", "Boardwalk"]
+        kinds = ["Blank","Property","Blank","Property","Blank","Railroad",
+                 "Property","Blank","Property","Property","Blank","Property",
+                 "Utility","Property","Property","Railroad",
+                 "Property","Blank","Property","Property","Blank","Property",
+                 "Blank","Property","Property","Railroad","Property",
+                 "Property","Utility","Property","Blank","Property",
+                 "Property","Blank","Property","Railroad","Blank","Property",
+                 "Blank","Property"]
+        costs = property_data[:,0]
+        rents = property_data[:,2]
+        #costs = [0,60,0,60,0,200,100,0,100,120,0,140,150,140,160,200,
+        #         180,0,180,200,0,220,0,220,240,200,260,260,150,280,
+        #         0,300,300,0,320,200,0,350,0,400]
+        #rents = [0,2,0,4,0,0,6,0,6,8,0,10,0,10,12,0,
+        #         14,0,14,16,0,18,0,18,20,0,22,22,0,24,
+        #         0,26,26,0,28,0,0,35,0,50]
         self.number_of_spaces = len(names)
         #Create the spaces on the board
-        self.spaces = [MonopolySpace(name, 0) for name in names]
+        self.spaces = []
+        counter = 0 #add one each time we add a property to the spaces
+        for i in range(self.number_of_spaces):
+            if kinds[i] == "Property":
+                self.spaces.append(MonopolySpace(names[i], kinds[i],
+                                                 cost=costs[counter],
+                                                 rent=rents[counter]))
+                counter += 1
+            elif kinds[i] == "Railroad":
+                self.spaces.append(MonopolySpace(names[i], kinds[i], cost=200))
+            elif kinds[i] == "Utility":
+                self.spaces.append(MonopolySpace(names[i], kinds[i], cost=150))
+            elif kinds[i] == "Blank":
+                self.spaces.append(MonopolySpace(names[i], kinds[i], cost=0))
+        self.space_names = names
         #Set the current position of an imaginary player to 0 (Go)
         self.space_visits = np.zeros(self.number_of_spaces)
         self.position_vector = np.zeros(self.number_of_spaces)
@@ -137,8 +175,11 @@ class MonopolyBoard(Board):
         or by apply the transition matrix to the position vector.
         """
         if via_roll:
+            if not hasattr(self, "rollmover"):
+                raise Exception("Must assign dice before rolling via move, "+\
+                                "by calling assign_dice().")
             #Use a rollmover
-            new_position = self.rollmover.update_position(self.current_position,
+            new_position = self.rollmover.update_position(self.position,
                                                           self.number_of_spaces)
             self._update_position(new_position)
         else:
