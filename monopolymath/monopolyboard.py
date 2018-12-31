@@ -2,8 +2,9 @@
 A specific monopoly board.
 """
 from typing import List
-from .diceroller import DiceRoller
 from .board import Space, Board
+from .diceroller import DiceRoller
+from .monopolyroller import MonopolyRollMover
 import numpy as np
 
 class MonopolySpace(Space):
@@ -83,6 +84,7 @@ class MonopolyBoard(Board):
         the standard monopoly set of two six-sided die.
         """
         self.diceroller = DiceRoller(sides, number, dice_array)
+        self.rollmover = MonopolyRollMover(self.diceroller)
         self._compute_roll_matrix()
         return
 
@@ -135,9 +137,9 @@ class MonopolyBoard(Board):
         or by apply the transition matrix to the position vector.
         """
         if via_roll:
-            #make a roll, record the position
-            roll, dice_rolls, doubles = self.diceroller.roll()
-            new_position = (self.position+roll)%self.number_of_spaces
+            #Use a rollmover
+            new_position = self.rollmover.update_position(self.current_position,
+                                                          self.number_of_spaces)
             self._update_position(new_position)
         else:
             #v = self.position_vector
