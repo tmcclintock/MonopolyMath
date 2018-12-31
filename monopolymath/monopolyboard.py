@@ -20,11 +20,14 @@ class MonopolySpace(Space):
     and other information.
     """
     def __init__(self, name: str,
-                 kind=None, cost=0, rent=None):
+                 kind=None, cost=0, group=0, rent=None, building_rents=None, RR_rents=None):
         self.name = name
         self.kind = kind
         self.cost = cost
+        self.group = group,
         self.rent = rent
+        self.building_rents = building_rents
+        self.RR_rents = RR_rents
 
 class MonopolyBoard(Board):
     """
@@ -52,14 +55,10 @@ class MonopolyBoard(Board):
                  "Property","Utility","Property","Blank","Property",
                  "Property","Blank","Property","Railroad","Blank","Property",
                  "Blank","Property"]
-        costs = property_data[:,0]
-        rents = property_data[:,2]
-        #costs = [0,60,0,60,0,200,100,0,100,120,0,140,150,140,160,200,
-        #         180,0,180,200,0,220,0,220,240,200,260,260,150,280,
-        #         0,300,300,0,320,200,0,350,0,400]
-        #rents = [0,2,0,4,0,0,6,0,6,8,0,10,0,10,12,0,
-        #         14,0,14,16,0,18,0,18,20,0,22,22,0,24,
-        #         0,26,26,0,28,0,0,35,0,50]
+        groups = property_data[:,0]
+        costs = property_data[:,1]
+        rents = property_data[:,3]
+        building_rents = property_data[:,4:9]
         self.number_of_spaces = len(names)
         #Create the spaces on the board
         self.spaces = []
@@ -68,14 +67,17 @@ class MonopolyBoard(Board):
             if kinds[i] == "Property":
                 self.spaces.append(MonopolySpace(names[i], kinds[i],
                                                  cost=costs[counter],
-                                                 rent=rents[counter]))
+                                                 group=int(groups[counter]),
+                                                 rent=rents[counter],
+                                                 building_rents=building_rents[counter]))
                 counter += 1
             elif kinds[i] == "Railroad":
-                self.spaces.append(MonopolySpace(names[i], kinds[i], cost=200))
+                self.spaces.append(MonopolySpace(names[i], kinds[i], group=8, cost=200,
+                                                 RR_rents = [25,50,100,200]))
             elif kinds[i] == "Utility":
-                self.spaces.append(MonopolySpace(names[i], kinds[i], cost=150))
+                self.spaces.append(MonopolySpace(names[i], kinds[i], group=9, cost=150))
             elif kinds[i] == "Blank":
-                self.spaces.append(MonopolySpace(names[i], kinds[i], cost=0))
+                self.spaces.append(MonopolySpace(names[i], kinds[i], group=0, cost=0))
         self.space_names = names
         #Set the current position of an imaginary player to 0 (Go)
         self.space_visits = np.zeros(self.number_of_spaces)
