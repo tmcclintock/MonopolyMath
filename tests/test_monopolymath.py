@@ -10,7 +10,7 @@ def test_diceroller_exceptions():
         dr = mm.DiceRoller(number=6.)
     #Check that the probability_array() function raises exceptions
     with npt.assert_raises(Exception):
-        dr = mm.DiceRoller(dice_array=[6,6])
+        dr = mm.DiceRoller(dice_array=[6, 6])
         dr.probability_array()
     with npt.assert_raises(Exception):
         dr = mm.DiceRoller(sides=4)
@@ -82,7 +82,7 @@ def test_monopolyboard():
     mb.assign_dice()
     npt.assert_equal(True, hasattr(mb, "diceroller"))
     npt.assert_equal(True, hasattr(mb, "roll_matrix"))
-    npt.assert_equal((40,40), mb.roll_matrix.shape)
+    npt.assert_equal((40, 40), mb.roll_matrix.shape)
     #Make sure that the current space is 0
     npt.assert_equal(1, mb.get_total_number_of_moves())
     npt.assert_equal(0, mb.position)

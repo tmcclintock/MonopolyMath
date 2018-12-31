@@ -1,0 +1,1 @@
+This directory contains notebooks that are used to run the Monopoly simulations and to build up statistics about when spaces are visited.

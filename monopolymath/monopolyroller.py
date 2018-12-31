@@ -28,11 +28,19 @@ class MonopolyRollMover(object):
 
         #Rule - getting out of jail on doubles or time
         if self.in_jail:
-            self.time_in_jail += 1            
-            if (self.time_in_jail >= 3) or (doubles == True):
-                self.N_doubles += (doubles == True) #Add 1 if we rolled doubles
+            self.time_in_jail += 1
+            #Roll doubles and you are out now
+            if doubles:
+                self.N_doubles += 1
                 self.in_jail = False
+                self.time_in_jail = 0
                 new_position = (10 + roll) % number_of_spaces
+            #Out on time and you are now just visiting
+            if (self.time_in_jail >= 3):
+                self.N_doubles = 0
+                self.in_jail = False
+                self.time_in_jail = 0
+                new_position = 10
             else:
                 new_position = 30 #still in jail
         else:
