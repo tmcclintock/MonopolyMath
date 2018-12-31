@@ -20,6 +20,9 @@ class MonopolyRollMover(object):
 
     def update_position(self, current_position: int,
                         number_of_spaces=40) -> int:
+        #The variable to be output
+        new_position = None
+        
         #Roll the dice roller
         roll, dice_rolls, doubles = self.diceroller.roll()
 
@@ -30,16 +33,18 @@ class MonopolyRollMover(object):
                 self.N_doubles += (doubles == True) #Add 1 if we rolled doubles
                 self.in_jail = False
                 new_position = (10 + roll) % number_of_spaces
+            else:
+                new_position = 30 #still in jail
         else:
             new_position = (current_position + roll) % number_of_spaces
             
         #Determine rules about the new position
         #Rule - doubles
         if not doubles:
-            N_doubles = 0
+            self.N_doubles = 0
         else:
-            N_doubles += 1
-            if N_doubles == 3:
+            self.N_doubles += 1
+            if self.N_doubles == 3:
                 new_position = 30 #Go to jail!
                 self.in_jail = True
         

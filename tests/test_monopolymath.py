@@ -94,8 +94,22 @@ def test_monopolyboard():
     npt.assert_equal("Mediterranean Ave", mb._space_names()[mb.position])
     return
 
+def test_monopolyroller():
+    dr = mm.DiceRoller()
+    mr = mm.MonopolyRollMover(dr)
+    #Test 100 times that starting at any spot from 0 to 39
+    #we get a new position in that range
+    for i in range(0, 100):
+        for p in range(0, 40):
+            n = mr.update_position(p)
+            npt.assert_equal(True, 0 <= n <= 39)
+            continue
+        continue
+    return
+
 if __name__ == "__main__":
     test_diceroller_exceptions()
     test_diceroller_without_dice_array()
     test_diceroller_with_dice_array()
     test_monopolyboard()
+    test_monopolyroller()
